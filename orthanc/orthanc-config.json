@@ -4,7 +4,7 @@
     "Parameters": [
         {
             "ParameterKey": "Namespace",
-            "ParameterValue": "orthanc"
+            "ParameterValue": "cardioware-orthanc"
         },
         {
             "ParameterKey": "ContainerOnEC2",
@@ -60,7 +60,7 @@
         },
         {
             "ParameterKey": "InstanceType",
-            "ParameterValue": "m4.large"
+            "ParameterValue": "t2.small"
         },
         {
             "ParameterKey": "NumberofEC2Instances",
@@ -80,7 +80,7 @@
         },
         {
             "ParameterKey": "RDSDBInstanceClass",
-            "ParameterValue": "db.t3.medium"
+            "ParameterValue": "db.t2.small"
         },
         {
             "ParameterKey": "RDSDBStorageType",
@@ -92,11 +92,11 @@
         },
         {
             "ParameterKey": "OrthancUser",
-            "ParameterValue": "orthanc"
+            "ParameterValue": "cardioware"
         },
         {
             "ParameterKey": "OrthancPassword",
-            "ParameterValue": "orthanc"
+            "ParameterValue": "cardio2022"
         },
         {
             "ParameterKey": "IsDBMultiAZ",

@@ -66,8 +66,8 @@ Parameters:
     AllowedPattern: "^[a-z]{1}[a-z0-9]{3,19}$"
     ConstraintDescription: Between 4-20 letters and digits, starting with a letter
   ContainerOnEC2:
-    Type: String 
-    Default: Y 
+    Type: String
+    Default: Y
     Description: Will the containers be hosted on ECS EC2? Y = EC2, N = Fargate
     AllowedValues: [Y, N]
   ExistingHostedZoneId:
@@ -115,9 +115,10 @@ Parameters:
   InstanceType:
     Description: (Optional, only for EC2 hosts) EC2 instance type.
     Type: String
-    Default: m4.large
+    Default: t2.small
     AllowedValues: [
       '',
+      t2.small, t2.medium,
       t2.large, t2.xlarge, t2.2xlarge,
       t3.large, t3.xlarge, t3.2xlarge,
       m4.large, m4.xlarge, m4.2xlarge, m4.4xlarge, m4.8xlarge,
@@ -147,12 +148,12 @@ Parameters:
     Default: 4096
     AllowedValues: [512, 1024, 2048, 3072, 4096, 5120, 6144, 7168, 8192, 9216, 10240, 11264, 12288, 13312, 14336, 15360, 16384, 30720]
   RDSDBInstanceClass:
-    Default: db.t3.medium
+    Default: db.t2.small
     Description: Database Instance Class. db.r5 instance classes are supported for Aurora PostgreSQL 10.6 or later. db.t3.medium instance class is supported for Aurora PostgreSQL 10.7 or later.
     Type: String
     AllowedValues: [
-      db.t3.medium,
-      db.r4.large, db.r4.xlarge, db.r4.2xlarge, db.r4.4xlarge, db.r4.8xlarge, db.r4.16xlarge, 
+      db.t2.small, db.t3.medium,
+      db.r4.large, db.r4.xlarge, db.r4.2xlarge, db.r4.4xlarge, db.r4.8xlarge, db.r4.16xlarge,
       db.r5.large, db.r5.xlarge, db.r5.2xlarge, db.r5.4xlarge, db.r5.8xlarge, db.r5.12xlarge, db.r5.16xlarge, db.r5.24xlarge
     ]
   RDSDBStorageType:
@@ -174,7 +175,7 @@ Parameters:
   RDSDBBackupRetentionDays:
     Type: Number
     Default: 30
-    Description: The number of days for which automated backups are retained. Setting this parameter to a positive number (from 1 to 35) enables backups. Setting this parameter to 0 disables automated backups. 
+    Description: The number of days for which automated backups are retained. Setting this parameter to a positive number (from 1 to 35) enables backups. Setting this parameter to 0 disables automated backups.
   RDSDBUserName:
     Type: String
     Description: RDS PostgreSQL database username
@@ -370,7 +371,7 @@ Resources:
       Tags:
         - Key: project
           Value: !Sub "${Namespace}-orthanconaws"
-      VPCSecurityGroups: 
+      VPCSecurityGroups:
         - !Ref OrthancRDSSecurityGroup
       DBSubnetGroupName: !Ref DataBaseSubnetGroup
       BackupRetentionPeriod: !Ref RDSDBBackupRetentionDays
@@ -380,7 +381,7 @@ Resources:
     DeletionPolicy: Snapshot
     Properties:
       Encrypted: True
-      BackupPolicy: 
+      BackupPolicy:
         Status: !Ref EnableEFSBackup
       LifecyclePolicies:
         - TransitionToIA: !Ref EFSStorageInfrequentAcessAfter
@@ -406,7 +407,7 @@ Resources:
 
   NFSAccessPoint:
     Type: AWS::EFS::AccessPoint
-    Properties: 
+    Properties:
       FileSystemId: !Ref FileSystem
       PosixUser:
         Gid: "0"
@@ -516,7 +517,7 @@ Resources:
   LogBucketAccessPolicy:
     Type: AWS::S3::BucketPolicy
     Condition: CreateBucket
-    Properties: 
+    Properties:
       Bucket: !Ref NewLogBucket
       PolicyDocument:
         Statement:
@@ -524,13 +525,13 @@ Resources:
               - 's3:PutObject'
             Effect: Allow
             Resource: !Sub '${NewLogBucket.Arn}/*'
-            Principal: 
+            Principal:
               AWS: !FindInMap [RegionELBAccountIdMap, !Ref 'AWS::Region', AccountId]
           - Action:
               - 's3:PutObject'
             Effect: Allow
             Resource: !Sub '${NewLogBucket.Arn}/*'
-            Principal: 
+            Principal:
               Service: delivery.logs.amazonaws.com
             Condition:
               StringEquals:
@@ -539,15 +540,15 @@ Resources:
               - 's3:GetBucketAcl'
             Effect: Allow
             Resource: !Sub '${NewLogBucket.Arn}'
-            Principal: 
+            Principal:
               Service: delivery.logs.amazonaws.com
 
   HostedZoneRecord:
     Condition: UseDomain
-    DependsOn: 
+    DependsOn:
       - LoadBalancerSSLCert
     Type: AWS::Route53::RecordSet
-    Properties: 
+    Properties:
       HostedZoneId: !Ref ExistingHostedZoneId
       Type: A
       Name: !Ref FullDomainName
@@ -603,7 +604,7 @@ Resources:
         - Key: com.docker.compose.service
           Value: orthanc
         - Key: depends-on-8042
-          Value: !If 
+          Value: !If
             - UseDomain
             - !GetAtt OrthancTCP8042HTTPSListener.ListenerArn
             - !GetAtt OrthancTCP8042HTTPListener.ListenerArn
@@ -738,10 +739,10 @@ Resources:
               Protocol: tcp
       Volumes:
         - Name: !Sub "${Namespace}-orthanc-efs"
-          EFSVolumeConfiguration: 
+          EFSVolumeConfiguration:
             FilesystemId: !GetAtt 'FileSystem.FileSystemId'
             TransitEncryption: ENABLED
-            AuthorizationConfig: 
+            AuthorizationConfig:
               AccessPointId: !Ref NFSAccessPoint
               IAM: ENABLED
       Cpu: !Ref OrthancContainerCPU
@@ -825,8 +826,8 @@ Resources:
           yum install -y aws-cfn-bootstrap bzip2 unzip git jq wget telnet java-11-amazon-corretto-headless
           /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource ECSAutoScalingGroup --region ${AWS::Region}
           amazon-linux-extras install postgresql11 -y
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"  
-          unzip awscliv2.zip  
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
           ./aws/install
           wget https://sourceforge.net/projects/dcm4che/files/dcm4che3/5.23.2/dcm4che-5.23.2-bin.zip -P /tmp
 
@@ -905,13 +906,13 @@ Resources:
                   - "logs:CreateLogGroup"
                   - "logs:CreateLogStream"
                   - "logs:PutLogEvents"
-                  - "logs:DescribeLogStreams"      
+                  - "logs:DescribeLogStreams"
 
   EC2InstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Condition: runContainerOnEC2
     Properties:
-      InstanceProfileName: !Sub "${Namespace}-instanceprofile"      
+      InstanceProfileName: !Sub "${Namespace}-instanceprofile"
       Path: /
       Roles: [!Ref EC2Role]
 
@@ -919,10 +920,10 @@ Resources:
 Outputs:
   OrthancEndpoint:
     Description: The URL of the reverse proxy for Orthanc web server endpoint
-    Value: !If 
+    Value: !If
       - UseDomain
       - !Sub "https://${FullDomainName}:8042"
-      - !Sub "http://${OrthancLoadBalancer.DNSName}:8042" 
+      - !Sub "http://${OrthancLoadBalancer.DNSName}:8042"
   LogBucket:
     Description: Log bucket name
     Value: !GetAtt LogBucketName.Value
