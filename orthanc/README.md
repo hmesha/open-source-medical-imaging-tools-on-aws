@@ -26,7 +26,7 @@ To enable TLS transport, provide the fully qualified domain name in the paramete
 
 ## Installation
 
-The deployment process is fully automated and performed by [AWS CloudFormation](https://aws.amazon.com/cloudformation) running the template file [orthanc-rds-template.yaml](https://github.com/aws-samples/open-source-medical-imaging-tools-on-aws/blob/main/orthanc/orthanc-rds-template.yaml).  Deployment takes around 15 minutes and can be accomplished in three ways:
+The deployment process is fully automated and performed by [AWS CloudFormation](https://aws.amazon.com/cloudformation) running the template file [orthanc-rds-template.yaml](https://github.com/hmesha/open-source-medical-imaging-tools-on-aws/blob/main/orthanc/orthanc-rds-template.yaml).  Deployment takes around 15 minutes and can be accomplished in three ways:
 * Log in to the AWS Console, and then click the link below.  This will open the AWS CloudFormation console with the template file pre-filled.
 
 [![launchstackbutton](figures/launchstack.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/template?stackName=orthanc&templateURL=https://orthanc-on-aws.s3.amazonaws.com/orthanc-rds-template.yaml)
