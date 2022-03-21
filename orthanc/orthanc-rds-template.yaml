@@ -717,6 +717,20 @@ Resources:
               Value: !If [ DoEnableOrthancWebViewerPlugin, 'true', 'false' ]
             - Name: ORTHANC_STONE_VIEWER_PLUGIN_ENABLED
               Value: !If [ DoEnableStoneWebViewerPlugin, 'true', 'false' ]
+            - Name: ORTHANC__DICOM_WEB__ENABLE
+              Value: 'true'
+            - Name: ORTHANC__DICOM_WEB__ROOT
+              Value: '/dicom-web/'
+            - Name: ORTHANC__DICOM_WEB__ENABLEWADO
+              Value: 'true'
+            - Name: ORTHANC__DICOM_WEB__WADOROOT
+              Value: '/wado'
+            - Name: ORTHANC__DICOM_WEB__STUDIESMETADATA
+              Value: 'MainDicomTags'
+            - Name: ORTHANC__DICOM_WEB__SERIESMETADATA
+              Value: 'Full'
+            - Name: DICOM_AET
+              Value: 'Cardioware-PACS'
           Essential: true
           Image: !Ref ContainerImageUrl
           LinuxParameters: {}
