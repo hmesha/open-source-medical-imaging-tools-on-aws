@@ -721,13 +721,17 @@ Resources:
               Value: 'true'
             - Name: ORTHANC__DICOM_WEB__ROOT
               Value: '/dicom-web/'
-            - Name: ORTHANC__DICOM_WEB__ENABLEWADO
+            - Name: ORTHANC__DICOM_WEB__SERVERS_SAMPLE_URL
+              Value: 'http://127.0.0.1/dicom-web/'
+            - Name: ORTHANC__DICOM_WEB__SERVERS
+              Value: '{"sample": [ "http://127.0.0.1/dicom-web/"]}'
+            - Name: ORTHANC__DICOM_WEB__ENABLE_WADO
               Value: 'true'
-            - Name: ORTHANC__DICOM_WEB__WADOROOT
+            - Name: ORTHANC__DICOM_WEB__WADO_ROOT
               Value: '/wado'
-            - Name: ORTHANC__DICOM_WEB__STUDIESMETADATA
+            - Name: ORTHANC__DICOM_WEB__STUDIES_METADATA
               Value: 'MainDicomTags'
-            - Name: ORTHANC__DICOM_WEB__SERIESMETADATA
+            - Name: ORTHANC__DICOM_WEB__SERIES_METADATA
               Value: 'Full'
             - Name: DICOM_AET
               Value: 'Cardioware-PACS'
