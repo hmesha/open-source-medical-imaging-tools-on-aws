@@ -722,7 +722,7 @@ Resources:
             - Name: ORTHANC__DICOM_WEB__ROOT
               Value: '/dicom-web/'
             - Name: ORTHANC__DICOM_WEB__SERVERS_SAMPLE_URL
-              Value: 'http://127.0.0.1/dicom-web/'
+              Value: 'http://127.0.0.1:8042/dicom-web/'
             - Name: ORTHANC__DICOM_WEB__ENABLE_WADO
               Value: 'true'
             - Name: ORTHANC__DICOM_WEB__WADO_ROOT
