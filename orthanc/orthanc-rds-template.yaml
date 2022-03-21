@@ -711,18 +711,22 @@ Resources:
                   - !Sub "${Namespace}-orthanconaws.local"
             - Name: ORTHANC__REGISTERED_USERS
               Value: !Sub '{"${OrthancUser}": "${OrthancPassword}"}'
+            - Name: ORTHANC__REMOTE_ACCESS_ALLOWED
+              Value: 'true'
+            - Name: ORTHANC__AUTHENTICATION_ENABLED
+              Value: 'true'
             - Name: DICOM_WEB_PLUGIN_ENABLED
-              Value: !If [ DoEnableDICOMWebPlugin, 'true', 'false' ]
+              Value: 'true'
             - Name: ORTHANC_WEB_VIEWER_PLUGIN_ENABLED
-              Value: !If [ DoEnableOrthancWebViewerPlugin, 'true', 'false' ]
+              Value: 'true'
             - Name: ORTHANC_STONE_VIEWER_PLUGIN_ENABLED
-              Value: !If [ DoEnableStoneWebViewerPlugin, 'true', 'false' ]
+              Value: 'true'
             - Name: ORTHANC__DICOM_WEB__ENABLE
               Value: 'true'
             - Name: ORTHANC__DICOM_WEB__ROOT
               Value: '/dicom-web/'
-            - Name: ORTHANC__DICOM_WEB__SERVERS_SAMPLE_URL
-              Value: 'http://127.0.0.1:8042/dicom-web/'
+            - Name: ORTHANC__DICOM_WEB__SERVERS
+              Value: '{"sample": [ "http://127.0.0.1:8042/dicom-web/", !Sub '{"${OrthancUser}", "${OrthancPassword}"}' ]}'
             - Name: ORTHANC__DICOM_WEB__ENABLE_WADO
               Value: 'true'
             - Name: ORTHANC__DICOM_WEB__WADO_ROOT
@@ -733,6 +737,10 @@ Resources:
               Value: 'Full'
             - Name: DICOM_AET
               Value: 'Cardioware-PACS'
+            - Name: VERBOSE_STARTUP
+              Value: 'true'
+
+
           Essential: true
           Image: !Ref ContainerImageUrl
           LinuxParameters: {}
